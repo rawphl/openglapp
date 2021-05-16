@@ -1,10 +1,9 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include <string>
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
-#include <glm/glm.hpp>
-#include "Application.h"
 
 namespace OpenGLApp  {
     class Shader {
@@ -12,7 +11,10 @@ namespace OpenGLApp  {
         GLuint id;
         static GLint compileShader(std::string const &src, GLint type);
     public:
+        Shader();
         Shader(std::string name);
+        void use();
+        void unuse();
         void bind(unsigned int location, float value);
         void bind(unsigned int location, glm::vec2 const & vec);
         void bind(unsigned int location, glm::vec3 const & vec);

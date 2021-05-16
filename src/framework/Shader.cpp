@@ -10,22 +10,18 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader.h"
 #include "Assets.h"
-#include "Application.h"
-#include "util.h"
 
 namespace OpenGLApp {
     GLint Shader::compileShader(std::string const &src, GLint type) {
         GLint status, length;
         auto shaderId = glCreateShader(type);
-        const char *c_str = src.c_str();
+        const char* c_str = src.c_str();
         glShaderSource(shaderId, 1, &c_str, nullptr);
         glCompileShader(shaderId);
         glGetShaderiv(shaderId, GL_COMPILE_STATUS, &status);
 
         if (status == false) {
-            OpenGLApp::log("Shader::compileShader error!");
             glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &length);
-            OpenGLApp::log("LEN:" + std::to_string(length));
             std::unique_ptr<char[]> buffer(new char[length]);
             glGetShaderInfoLog(shaderId, length, nullptr, buffer.get());
             fprintf(stderr, "SHADER COMPILE ERROR: %s\n%s", src.c_str(), buffer.get());
@@ -34,7 +30,6 @@ namespace OpenGLApp {
     }
 
     Shader::Shader(std::string name) {
-        OpenGLApp::log("Compiling shader: " + name);
         id = glCreateProgram();
         auto paths = OpenGLApp::Assets::shaderNameToFilePaths(name);
         auto vsSource = OpenGLApp::Assets::readFile(std::get<0>(paths));
@@ -51,12 +46,19 @@ namespace OpenGLApp {
         glGetProgramiv(id, GL_LINK_STATUS, &status);
 
         if (status == false) {
-            OpenGLApp::log("Shader::compileShader PROGRAM LINK ERROR");
             glGetProgramiv(id, GL_INFO_LOG_LENGTH, &length);
             std::unique_ptr<char[]> buffer(new char[length]);
             glGetProgramInfoLog(id, length, nullptr, buffer.get());
             fprintf(stderr, "PROGRAM LINK ERROR: %s", buffer.get());
         }
+    }
+
+    void Shader::use() {
+        glUseProgram(id);
+    }
+
+    void Shader::unuse() {
+        glUseProgram(0);
     }
 
     void Shader::bind(unsigned int location, float value) {

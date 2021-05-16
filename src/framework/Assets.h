@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+#include <tuple>
 
 namespace OpenGLApp  {
     class Assets {

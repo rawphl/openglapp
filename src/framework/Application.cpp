@@ -1,14 +1,18 @@
 #include <iostream>
-#include <glm/glm.hpp>
 #include <functional>
-#include <glad\glad.h>
-#include <GLFW\glfw3.h>
+
 #include "Application.h"
 
 namespace OpenGLApp {
+    Application::Application() {
+        width = 1024;
+        height = 768;
+    }
+
     Application::Application(int _width, int _height) {
         width = _width;
         height = _height;
+
         glfwSetErrorCallback([](int errorCode, const char *description) {
             perror(description);
         });
@@ -72,7 +76,7 @@ namespace OpenGLApp {
         glfwDestroyWindow(window);
     }
 
-    void Application::run(void (*fn) (float t, float dt)) {
+    void Application::loop() {
         std::cout << "Application::run()" << std::endl;
         float lastTime = static_cast<float>(glfwGetTime());
         float t = 0;
@@ -82,7 +86,7 @@ namespace OpenGLApp {
             t = static_cast<float>(glfwGetTime());
             dt = t - lastTime;
             lastTime = t;
-            fn(t, dt);
+            run(t, dt);
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
